@@ -170,3 +170,25 @@ export const uploadInspectionEvidence =
 
     return data;
   };
+
+export const analyzeInspection = async (inspectionId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/inspections/${inspectionId}/analyze`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || data.error || "AI analysis failed"
+    );
+  }
+
+  return data;
+};

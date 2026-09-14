@@ -1,4 +1,6 @@
 const Inspection = require("../models/Inspection");
+const path = require("path");
+const { runInspectionAI } = require("../services/ai/aiOrchestrator");
 
 const generateInspectionId = () => {
   const date = new Date();
@@ -237,9 +239,118 @@ const uploadEvidence = async (req, res) => {
   }
 };
 
+const analyzeInspection = async (req, res) => {
+  try {
+    const { inspectionId } = req.params;
+
+    const inspection = await Inspection.findOne({
+      inspectionId,
+    });
+
+    if (!inspection) {
+      return res.status(404).json({
+        success: false,
+        message: "Inspection not found",
+      });
+    }
+
+    // -----------------------------------------
+    // Collect available package images
+    // -----------------------------------------
+
+    const images = {};
+
+    const sides = ["front", "back", "left", "right"];
+
+    sides.forEach((side) => {
+      const evidence = inspection.evidence?.[side];
+
+      if (evidence?.url) {
+        const filename = path.basename(evidence.url);
+
+        images[side] = path.join(
+          __dirname,
+          "../../uploads",
+          filename
+        );
+      }
+    });
+
+    if (Object.keys(images).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No package images available for analysis.",
+      });
+    }
+
+    // -----------------------------------------
+    // Mark analysis as processing
+    // -----------------------------------------
+
+    inspection.aiAnalysis.status = "PROCESSING";
+    await inspection.save();
+
+    console.log(
+      `Starting AI analysis for ${inspectionId}`
+    );
+
+    // -----------------------------------------
+    // Run AI orchestrator
+    // -----------------------------------------
+
+    const aiResult = await runInspectionAI(images);
+
+    // -----------------------------------------
+    // Save AI result
+    // -----------------------------------------
+
+    if (!aiResult.success) {
+      inspection.aiAnalysis.status = "FAILED";
+      inspection.aiAnalysis.result = aiResult;
+      inspection.aiAnalysis.analyzedAt = new Date();
+
+      await inspection.save();
+
+      return res.status(500).json({
+        success: false,
+        message: "AI analysis failed",
+        error: aiResult.error,
+      });
+    }
+
+    inspection.aiAnalysis.status =
+      aiResult.analysisStatus === "NEEDS_VERIFICATION"
+        ? "NEEDS_VERIFICATION"
+        : "COMPLETED";
+
+    inspection.aiAnalysis.result = aiResult;
+    inspection.aiAnalysis.analyzedAt = new Date();
+
+    await inspection.save();
+
+    return res.status(200).json({
+      success: true,
+      inspectionId,
+      aiAnalysis: inspection.aiAnalysis,
+    });
+  } catch (error) {
+    console.error(
+      "Inspection AI analysis error:",
+      error.message
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to analyze inspection",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   createInspection,
   getInspections,
+  analyzeInspection,
   uploadEvidence,
 };

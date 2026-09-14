@@ -1,0 +1,282 @@
+.evidence-view-page {
+  min-height: 100vh;
+  background: #090b09;
+  color: #f1f4eb;
+  display: flex;
+  flex-direction: column;
+}
+
+.evidence-header {
+  height: 76px;
+  padding: 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(202,255,77,.1);
+}
+
+.evidence-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.evidence-logo {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #caff4d;
+  color: #10130c;
+  font-weight: 800;
+}
+
+.evidence-brand h2 {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: .8px;
+}
+
+.evidence-brand span,
+.evidence-id span,
+.evidence-title > span,
+.evidence-card-header span {
+  color: #687061;
+  font-size: 8px;
+  letter-spacing: 1.3px;
+}
+
+.evidence-id {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.evidence-id strong {
+  color: #caff4d;
+  font-size: 10px;
+}
+
+.evidence-main {
+  flex: 1;
+  width: min(1100px, calc(100% - 50px));
+  margin: auto;
+  padding: 40px 0;
+}
+
+.evidence-title h1 {
+  margin: 8px 0;
+  font-size: 30px;
+  letter-spacing: -.7px;
+}
+
+.evidence-title p {
+  margin: 0 0 28px;
+  color: #737b6d;
+  font-size: 11px;
+}
+
+.evidence-layout {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 14px;
+}
+
+.evidence-image-card,
+.evidence-list-card {
+  background: #0d100d;
+  border: 1px solid #1c211b;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.evidence-card-header {
+  padding: 17px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #1b201a;
+}
+
+.evidence-card-header h3 {
+  margin: 5px 0 0;
+  font-size: 13px;
+}
+
+.capture-status {
+  color: #caff4d;
+  font-size: 8px;
+  letter-spacing: .8px;
+}
+
+.evidence-image-container {
+  height: 430px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #070907;
+}
+
+.evidence-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.no-image {
+  color: #596254;
+  font-size: 11px;
+}
+
+.image-meta {
+  padding: 11px 16px;
+  display: flex;
+  justify-content: space-between;
+  color: #596254;
+  font-size: 8px;
+}
+
+.evidence-count {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(202,255,77,.08);
+  color: #caff4d;
+  font-size: 11px;
+}
+
+.evidence-items {
+  max-height: 475px;
+  overflow-y: auto;
+}
+
+.evidence-item {
+  display: flex;
+  gap: 13px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #171b16;
+}
+
+.evidence-number {
+  color: #566052;
+  font-size: 9px;
+  padding-top: 2px;
+}
+
+.evidence-detail {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.evidence-detail > span {
+  color: #737d6d;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.evidence-detail strong {
+  color: #e0e5da;
+  font-size: 10px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.evidence-detail small {
+  color: #596254;
+  font-size: 7px;
+}
+
+.empty-evidence {
+  padding: 40px;
+  text-align: center;
+  color: #596254;
+  font-size: 10px;
+}
+
+.evidence-warning {
+  margin-top: 14px;
+  padding: 13px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: rgba(202,255,77,.025);
+  border: 1px solid rgba(202,255,77,.07);
+  border-radius: 9px;
+}
+
+.evidence-warning div {
+  color: #caff4d;
+}
+
+.evidence-warning p {
+  margin: 0;
+  color: #626b5e;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.evidence-footer {
+  height: 66px;
+  padding: 0 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(202,255,77,.1);
+}
+
+.evidence-footer > span {
+  color: #50584c;
+  font-size: 8px;
+  letter-spacing: .7px;
+}
+
+.secondary-button,
+.primary-button {
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.secondary-button {
+  background: #11140f;
+  border: 1px solid #242a21;
+  color: #7d8676;
+}
+
+.primary-button {
+  background: #caff4d;
+  border: 1px solid #caff4d;
+  color: #10130c;
+}
+
+@media (max-width: 800px) {
+  .evidence-main {
+    width: calc(100% - 30px);
+  }
+
+  .evidence-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .evidence-image-container {
+    height: 350px;
+  }
+
+  .evidence-footer {
+    padding: 0 18px;
+  }
+
+  .evidence-footer > span {
+    display: none;
+  }
+}

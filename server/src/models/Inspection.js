@@ -136,6 +136,29 @@ const inspectionSchema = new mongoose.Schema(
         },
       },
     },
+    aiAnalysis: {
+      status: {
+        type: String,
+        enum: [
+          "NOT_STARTED",
+          "PROCESSING",
+          "COMPLETED",
+          "NEEDS_VERIFICATION",
+          "FAILED",
+        ],
+        default: "NOT_STARTED",
+      },
+
+      result: {
+        type: mongoose.Schema.Types.Mixed,
+        default: null,
+      },
+
+      analyzedAt: {
+        type: Date,
+        default: null,
+      },
+    },
   },
   {
     timestamps: true,

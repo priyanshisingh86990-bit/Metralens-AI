@@ -7,11 +7,16 @@ import Dashboard from "./components/Dashboard";
 import NewInspection from "./components/NewInspection";
 import InspectionHistory from "./components/InspectionHistory";
 import CaptureQualityGate from "./components/CaptureQualityGate";
+import AIAnalysis from "./components/AIAnalysis";
+import ComplianceResult from "./components/ComplianceResult";
+import EvidenceView from "./components/EvidenceView";
+import EvidencePassport from "./components/EvidencePassport";
 
 function App() {
   const [page, setPage] = useState("home");
   const [activeInspection, setActiveInspection] =
     useState(null);
+  const [analysisResult, setAnalysisResult] = useState(null);
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("metralens_user");
@@ -63,26 +68,69 @@ function App() {
     );
   }
 
-  if (
-    user &&
-    page === "capture" &&
-    activeInspection
-  ) {
+  if (user && page === "capture" && activeInspection) {
     return (
       <CaptureQualityGate
         user={user}
         inspection={activeInspection}
-        onBack={() =>
-          setPage("new-inspection")
-        }
+        onBack={() => setPage("new-inspection")}
         onContinue={() => {
-          console.log(
-            "Evidence capture complete:",
-            activeInspection
-          );
-
-          setPage("dashboard");
+          console.log("Evidence capture complete:", activeInspection);
+          setPage("analysis");
         }}
+      />
+    );
+  }
+
+  if (user && page === "analysis" && activeInspection) {
+    return (
+      <AIAnalysis
+        user={user}
+        inspection={activeInspection}
+        onBack={() => setPage("capture")}
+        onComplete={(result) => {
+          setAnalysisResult(result);
+          setPage("compliance");
+        }}
+      />
+    );
+  }
+
+  if (user && page === "compliance" && activeInspection) {
+    return (
+      <ComplianceResult
+        user={user}
+        inspection={activeInspection}
+        analysisResult={analysisResult}
+        onBack={() => setPage("analysis")}
+        onContinue={() => {
+          setPage("evidence");
+        }}
+      />
+    );
+  }
+
+  if (user && page === "evidence" && activeInspection) {
+    return (
+      <EvidenceView
+        user={user}
+        inspection={activeInspection}
+        analysisResult={analysisResult}
+        onBack={() => setPage("compliance")}
+        onContinue={() => {
+          setPage("passport");
+        }}
+      />
+    );
+  }
+
+  if (user && page === "passport" && activeInspection) {
+    return (
+      <EvidencePassport
+        inspection={activeInspection}
+        analysisResult={analysisResult}
+        onBack={() => setPage("evidence")}
+        onContinue={() => setPage("history")}
       />
     );
   }

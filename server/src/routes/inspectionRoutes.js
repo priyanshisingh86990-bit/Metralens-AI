@@ -4,7 +4,9 @@ const {
   createInspection,
   getInspections,
   uploadEvidence,
+  analyzeInspection,
 } = require("../controllers/inspectionController");
+
 const upload = require("../middleware/uploadMiddleware");
 
 const router = express.Router();
@@ -28,5 +30,7 @@ router.post(
   upload.single("image"),
   uploadEvidence
 );
+
+router.post("/:inspectionId/analyze", analyzeInspection);
 
 module.exports = router;
