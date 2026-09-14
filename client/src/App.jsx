@@ -5,9 +5,13 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard";
 import NewInspection from "./components/NewInspection";
+import InspectionHistory from "./components/InspectionHistory";
+import CaptureQualityGate from "./components/CaptureQualityGate";
 
 function App() {
   const [page, setPage] = useState("home");
+  const [activeInspection, setActiveInspection] =
+    useState(null);
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("metralens_user");
@@ -42,33 +46,83 @@ function App() {
   };
 
   if (user && page === "new-inspection") {
-  return (
-    <NewInspection
-      user={user}
-      onBack={() => setPage("dashboard")}
-      onCreated={(inspection) => {
-        console.log(
-          "Inspection created:",
-          inspection
-        );
+    return (
+      <NewInspection
+        user={user}
+        onBack={() => setPage("dashboard")}
+        onCreated={(inspection) => {
+          console.log(
+            "Inspection created:",
+            inspection
+          );
 
-        setPage("dashboard");
-      }}
-    />
-  );
-}
+          setActiveInspection(inspection);
+          setPage("capture");
+        }}
+      />
+    );
+  }
 
-if (user) {
-  return (
-    <Dashboard
-      user={user}
-      onLogout={handleLogout}
-      onNewInspection={() =>
-        setPage("new-inspection")
-      }
-    />
-  );
-}
+  if (
+    user &&
+    page === "capture" &&
+    activeInspection
+  ) {
+    return (
+      <CaptureQualityGate
+        user={user}
+        inspection={activeInspection}
+        onBack={() =>
+          setPage("new-inspection")
+        }
+        onContinue={() => {
+          console.log(
+            "Evidence capture complete:",
+            activeInspection
+          );
+
+          setPage("dashboard");
+        }}
+      />
+    );
+  }
+
+  if (user && page === "history") {
+    return (
+      <InspectionHistory
+        user={user}
+        onBack={() => setPage("dashboard")}
+        onNewInspection={() =>
+          setPage("new-inspection")
+        }
+        onOpenInspection={(inspection) => {
+          setActiveInspection(inspection);
+
+          if (
+            inspection.status ===
+            "CAPTURE_PENDING"
+          ) {
+            setPage("capture");
+          }
+        }}
+      />
+    );
+  }
+
+  if (user) {
+    return (
+      <Dashboard
+        user={user}
+        onLogout={handleLogout}
+        onNewInspection={() =>
+          setPage("new-inspection")
+        }
+        onViewHistory={() =>
+          setPage("history")
+        }
+      />
+    );
+  }
 
   if (page === "login") {
     return (

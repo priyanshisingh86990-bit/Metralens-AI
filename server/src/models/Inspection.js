@@ -74,6 +74,68 @@ const inspectionSchema = new mongoose.Schema(
         default: false,
       },
     },
+
+    evidence: {
+      front: {
+        url: {
+          type: String,
+          default: "",
+        },
+        originalName: {
+          type: String,
+          default: "",
+        },
+        capturedAt: {
+          type: Date,
+          default: null,
+        },
+      },
+
+      back: {
+        url: {
+          type: String,
+          default: "",
+        },
+        originalName: {
+          type: String,
+          default: "",
+        },
+        capturedAt: {
+          type: Date,
+          default: null,
+        },
+      },
+
+      left: {
+        url: {
+          type: String,
+          default: "",
+        },
+        originalName: {
+          type: String,
+          default: "",
+        },
+        capturedAt: {
+          type: Date,
+          default: null,
+        },
+      },
+
+      right: {
+        url: {
+          type: String,
+          default: "",
+        },
+        originalName: {
+          type: String,
+          default: "",
+        },
+        capturedAt: {
+          type: Date,
+          default: null,
+        },
+      },
+    },
   },
   {
     timestamps: true,

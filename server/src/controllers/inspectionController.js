@@ -21,6 +21,7 @@ const generateInspectionId = () => {
 };
 
 
+// CREATE INSPECTION
 const createInspection = async (req, res) => {
   try {
     const {
@@ -50,23 +51,35 @@ const createInspection = async (req, res) => {
     const inspection =
       await Inspection.create({
         inspectionId,
+
         inspector: inspectorId,
+
         productName: productName.trim(),
-        brand: brand?.trim() || "",
-        category: category.trim(),
+
+        brand:
+          brand?.trim() || "",
+
+        category:
+          category.trim(),
+
         manufacturer:
           manufacturer?.trim() || "",
+
         batchNumber:
           batchNumber?.trim() || "",
+
         status: "CAPTURE_PENDING",
       });
 
     return res.status(201).json({
       success: true,
+
       message:
         "Inspection created successfully.",
+
       inspection,
     });
+
   } catch (error) {
     console.error(
       "Create inspection error:",
@@ -75,6 +88,7 @@ const createInspection = async (req, res) => {
 
     return res.status(500).json({
       success: false,
+
       message:
         "Failed to create inspection.",
     });
@@ -82,6 +96,150 @@ const createInspection = async (req, res) => {
 };
 
 
+// GET INSPECTIONS FOR INSPECTOR
+const getInspections = async (req, res) => {
+  try {
+    const { inspectorId } = req.params;
+
+    if (!inspectorId) {
+      return res.status(400).json({
+        success: false,
+        message: "Inspector ID is required.",
+      });
+    }
+
+    const inspections =
+      await Inspection.find({
+        inspector: inspectorId,
+      })
+        .sort({
+          createdAt: -1,
+        });
+
+    return res.status(200).json({
+      success: true,
+
+      count: inspections.length,
+
+      inspections,
+    });
+
+  } catch (error) {
+    console.error(
+      "Get inspections error:",
+      error.message
+    );
+
+    return res.status(500).json({
+      success: false,
+
+      message:
+        "Failed to fetch inspections.",
+    });
+  }
+};
+
+const uploadEvidence = async (req, res) => {
+  try {
+    const {
+      inspectionId,
+      side,
+    } = req.body;
+
+    if (!inspectionId || !side) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Inspection ID and package side are required.",
+      });
+    }
+
+    const allowedSides = [
+      "front",
+      "back",
+      "left",
+      "right",
+    ];
+
+    if (!allowedSides.includes(side)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid package side.",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Image file is required.",
+      });
+    }
+
+    const inspection =
+      await Inspection.findOne({
+        inspectionId,
+      });
+
+    if (!inspection) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Inspection not found.",
+      });
+    }
+
+    const imageUrl =
+      `/uploads/${req.file.filename}`;
+
+    inspection.evidence[side] = {
+      url: imageUrl,
+      originalName:
+        req.file.originalname,
+      capturedAt: new Date(),
+    };
+
+    inspection.packageSides[side] =
+      true;
+
+    inspection.status =
+      "CAPTURE_PENDING";
+
+    await inspection.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        `${side} evidence uploaded successfully.`,
+      evidence: {
+        side,
+        url: imageUrl,
+        originalName:
+          req.file.originalname,
+        capturedAt:
+          inspection.evidence[side]
+            .capturedAt,
+      },
+      inspection,
+    });
+  } catch (error) {
+    console.error(
+      "Upload evidence error:",
+      error.message
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to upload evidence.",
+    });
+  }
+};
+
+
 module.exports = {
   createInspection,
+  getInspections,
+  uploadEvidence,
 };

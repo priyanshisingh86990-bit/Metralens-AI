@@ -100,9 +100,73 @@ export const createInspection = async ({
   if (!response.ok) {
     throw new Error(
       data.message ||
-        "Failed to create inspection"
+      "Failed to create inspection"
     );
   }
 
   return data;
 };
+
+// GET INSPECTIONS
+export const getInspections = async (
+  inspectorId
+) => {
+  const response = await fetch(
+    `${API_BASE_URL}/inspections/${inspectorId}`
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+      "Failed to fetch inspections"
+    );
+  }
+
+  return data;
+};
+// UPLOAD INSPECTION EVIDENCE
+export const uploadInspectionEvidence =
+  async ({
+    inspectionId,
+    side,
+    image,
+  }) => {
+    const formData = new FormData();
+
+    formData.append(
+      "inspectionId",
+      inspectionId
+    );
+
+    formData.append(
+      "side",
+      side
+    );
+
+    formData.append(
+      "image",
+      image
+    );
+
+    const response = await fetch(
+      `${API_BASE_URL}/inspections/evidence`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        "Failed to upload evidence"
+      );
+    }
+
+    return data;
+  };
