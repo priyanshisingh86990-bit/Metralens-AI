@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { analyzeInspection } from "../api";
+import { useEffect, useRef, useState } from "react";
+import { analyzeInspection } from "../services/api";
 import "./AIAnalysis.css";
 
 const steps = [
@@ -42,9 +42,17 @@ export default function AIAnalysis({
     const [analysisStatus, setAnalysisStatus] = useState("PROCESSING");
     const [error, setError] = useState("");
     const [result, setResult] = useState(null);
+    const analysisStartedRef = useRef(false);
 
 
     useEffect(() => {
+        if (analysisStartedRef.current) {
+            return;
+        }
+
+        analysisStartedRef.current = true;
+
+
         if (!inspection?.inspectionId) {
             setError("Inspection ID is missing.");
             setAnalysisStatus("FAILED");

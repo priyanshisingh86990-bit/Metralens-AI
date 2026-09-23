@@ -13,6 +13,35 @@ export default function ComplianceResult({
 
   const isVerification = aiStatus === "NEEDS_VERIFICATION";
 
+  const aiResult =
+    analysisResult?.aiAnalysis?.result || {};
+    console.log("COMPLIANCE AI RESULT:", aiResult);
+
+  // ---------------------------------------
+  // EVIDENCE COVERAGE
+  // ---------------------------------------
+  const evidence = aiResult?.evidence;
+
+  const evidenceCount = Array.isArray(evidence)
+    ? evidence.length
+    : evidence && typeof evidence === "object"
+      ? Object.keys(evidence).length
+      : 0;
+
+  // ---------------------------------------
+  // AI CONFIDENCE
+  // ---------------------------------------
+  const confidenceValues = Object.values(
+    aiResult?.confidence || {}
+  )
+    .map((item) => Number(item?.score))
+    .filter((value) => Number.isFinite(value));
+
+  const aiConfidence =
+    confidenceValues.length > 0
+      ? Math.round(Math.min(...confidenceValues))
+      : 0;
+
   return (
     <div className="compliance-page">
 
@@ -106,6 +135,8 @@ export default function ComplianceResult({
                   ?.result
                   ?.panels
                   ?.front
+                  ?.pipeline
+                  ?.gemini
                   ?.analysis
                   ?.product
                   ?.name ||
@@ -119,6 +150,8 @@ export default function ComplianceResult({
                   ?.result
                   ?.panels
                   ?.front
+                  ?.pipeline
+                  ?.gemini
                   ?.analysis
                   ?.product
                   ?.brand ||
@@ -135,11 +168,7 @@ export default function ComplianceResult({
               </div>
 
               <div className="big-number">
-                {analysisResult
-                  ?.aiAnalysis
-                  ?.result
-                  ?.summary
-                  ?.evidenceCount || 0}
+                {evidenceCount}
               </div>
 
               <p>
@@ -155,16 +184,7 @@ export default function ComplianceResult({
               </div>
 
               <div className="big-number lime">
-                {analysisResult
-                  ?.aiAnalysis
-                  ?.result
-                  ?.summary
-                  ?.lowestConfidence ?? "--"}
-                {analysisResult
-                  ?.aiAnalysis
-                  ?.result
-                  ?.summary
-                  ?.lowestConfidence != null && "%"}
+                {aiConfidence}%
               </div>
 
               <p>

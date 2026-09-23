@@ -1,16 +1,14 @@
 const express = require("express");
+const upload = require("../middleware/uploadMiddleware");
 
+const router = express.Router();
 const {
   createInspection,
   getInspections,
   uploadEvidence,
   analyzeInspection,
+  verifyInspection,
 } = require("../controllers/inspectionController");
-
-const upload = require("../middleware/uploadMiddleware");
-
-const router = express.Router();
-
 
 // CREATE INSPECTION
 router.post(
@@ -32,5 +30,7 @@ router.post(
 );
 
 router.post("/:inspectionId/analyze", analyzeInspection);
+
+router.post("/:inspectionId/verify", verifyInspection);
 
 module.exports = router;

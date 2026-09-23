@@ -159,6 +159,23 @@ const inspectionSchema = new mongoose.Schema(
         default: null,
       },
     },
+
+    humanVerification: {
+      status: {
+        type: String,
+        enum: ["NOT_VERIFIED", "VERIFIED"],
+        default: "NOT_VERIFIED",
+      },
+      verifiedAt: {
+        type: Date,
+        default: null,
+      },
+      verifiedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+      },
+    },
   },
   {
     timestamps: true,

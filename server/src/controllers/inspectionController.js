@@ -347,10 +347,52 @@ const analyzeInspection = async (req, res) => {
   }
 };
 
+const verifyInspection = async (req, res) => {
+  try {
+    const { inspectionId } = req.params;
+
+    const inspection = await Inspection.findOne({ inspectionId });
+
+    if (!inspection) {
+      return res.status(404).json({
+        success: false,
+        message: "Inspection not found",
+      });
+    }
+
+    // Save human verification
+    inspection.humanVerification = {
+      status: "VERIFIED",
+      verifiedAt: new Date(),
+      verifiedBy: req.body?.inspectorId || null,
+    };
+
+    // Final inspection status
+    inspection.status = "PASSED";
+
+    await inspection.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Inspection verified successfully",
+      inspection,
+    });
+  } catch (error) {
+    console.error("Inspection verification failed:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to verify inspection",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   createInspection,
   getInspections,
   analyzeInspection,
   uploadEvidence,
+  verifyInspection,
 };

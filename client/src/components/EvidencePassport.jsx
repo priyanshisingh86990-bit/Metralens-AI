@@ -5,6 +5,7 @@ export default function EvidencePassport({
   analysisResult,
   onBack,
   onContinue,
+  onVerify,
 }) {
   const ai =
     analysisResult?.aiAnalysis?.result || {};
@@ -138,18 +139,33 @@ export default function EvidencePassport({
           <div className="verification-icon">✓</div>
 
           <div>
-            <strong>AI observations preserved</strong>
+            <strong>
+              {inspection?.humanVerification?.status === "VERIFIED"
+                ? "Inspection verified by inspector"
+                : "AI observations preserved"}
+            </strong>
+
             <p>
-              This passport records observations from the
-              inspection evidence. Final legal compliance
-              determination is performed by the configured
-              rule engine.
+              {inspection?.humanVerification?.status === "VERIFIED"
+                ? `Verified on ${new Date(
+                  inspection?.humanVerification?.verifiedAt
+                ).toLocaleString()}`
+                : "This passport records observations from the inspection evidence. Final verification requires inspector review."}
             </p>
           </div>
-
           <div className="verification-tag">
-            TRACEABLE RECORD
+            {inspection?.humanVerification?.status === "VERIFIED"
+              ? "✓ VERIFIED"
+              : "AWAITING VERIFICATION"}
           </div>
+          {inspection?.humanVerification?.status !== "VERIFIED" && (
+            <button
+              className="passport-verify-button"
+              onClick={onVerify}
+            >
+              ✓ Verify Inspection
+            </button>
+          )}
         </section>
 
       </main>
